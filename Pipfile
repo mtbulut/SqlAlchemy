@@ -12,6 +12,7 @@ pandas = "*"
 sqlalchemy = "*"
 matplotlib = "*"
 numpy = "*"
+flask = "*"
 
 [requires]
 python_version = "3.7"
