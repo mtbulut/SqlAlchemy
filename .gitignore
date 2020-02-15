@@ -1,3 +1,2 @@
-
-**/*.ipynb_checkpoints/
+SqlAlchemy/.ipynb_checkpoints/*.ipynb
 
