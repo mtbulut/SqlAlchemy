@@ -48,9 +48,63 @@ def precipitation():
 
     return jsonify(precipation_list)
 
-# getting a json list of stations from the dataset
+# return a json list of stations from the dataset
 
-@app.route('/api/v1.0/stations')
+@app.route("/api/v1.0/stations")
+def stations():
+    """Return a list all station's names"""
+    result = session.query(Station.name).all()
+    # from tumple to list
+    station_names = list(np.ravel(result))
+    return jsonify(station_names)
+
+# return a json list of Temperature Observations (tobs) for the previous year
+@app.route("/api/v1.0/tobs")
+def tobs():
+    """Return a list of all temperature observations for the previous year"""
+    # Query all tobs values
+    result_t = session.query(Measurement.tobs).all()
+
+    # Convert list of tuples into normal list
+    tobs_values = list(np.ravel(result_t))
+
+    return jsonify(tobs_values)
+
+#############################################################
+# Return a json list of the minimum temperature, the average temperature, and the max 
+# temperature for a given start or start-end range.
+@app.route("/api/v1.0/<start>")
+def temperatures_start(start):
+    """ Given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than 
+        and equal to the start date. 
+    """
+    results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func\
+        .max(Measurement.tobs)).\
+                filter(Measurement.date >= start).all()
+    
+    # Convert list of tuples into normal list
+    temperatures_start = list(np.ravel(results))
+
+    return jsonify(temperatures_start)
+
+# When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates 
+# between the start and end date inclusive.
+@app.route("/api/v1.0/<start>/<end>")
+def temperatures_start_end(start, end):
+    """ When given the start and the end date, calculate the TMIN, TAVG, 
+        and TMAX for dates between the start and end date inclusive.
+    """
+    results = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func\
+        .max(Measurement.tobs)).\
+                filter(Measurement.date >= start).\
+                filter(Measurement.date <= end).all()
+    
+    # Convert list of tuples into normal list
+    temperatures_start_end = list(np.ravel(results))
+
+    return jsonify(temperatures_start_end)
+
+#############################################################
 
 if __name__ == "__main__":
     app.run(debug=True)
