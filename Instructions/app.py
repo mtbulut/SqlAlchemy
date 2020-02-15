@@ -48,5 +48,9 @@ def precipitation():
 
     return jsonify(precipation_list)
 
+# getting a json list of stations from the dataset
+
+@app.route('/api/v1.0/stations')
+
 if __name__ == "__main__":
     app.run(debug=True)
